@@ -1,0 +1,8 @@
+.venv/
+__pycache__/
+*.egg-info/
+.pytest_cache/
+.ruff_cache/
+# Die echte Konfiguration gehört auf den Pi, nicht ins Repo.
+config/config.yaml
+.DS_Store

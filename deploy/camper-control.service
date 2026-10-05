@@ -1,0 +1,24 @@
+[Unit]
+Description=Camper Control – zentrale Steuereinheit
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=camper
+Group=camper
+# gpio: Relais, i2c: INA226. 1-Wire liegt unter /sys und braucht keine Gruppe.
+SupplementaryGroups=gpio i2c
+Environment=CAMPER_CONFIG=/etc/camper-control/config.yaml
+Environment=CAMPER_PORT=8080
+ExecStart=/opt/camper-control/.venv/bin/camper-control
+Restart=always
+RestartSec=3
+
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=true
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target

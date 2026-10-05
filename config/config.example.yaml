@@ -1,0 +1,71 @@
+# Camper Control – Verdrahtung des Fahrzeugs.
+#
+# Auf dem Pi liegt die echte Datei unter /etc/camper-control/config.yaml
+# (siehe deploy/install.sh). Diese Beispieldatei nutzt den Mock-Treiber und
+# läuft damit auf jedem Rechner.
+
+driver: mock          # mock | pi
+poll_interval_s: 2
+
+switches:
+  # pin = BCM-GPIO-Nummer (nicht die physische Pin-Nummer am Header!)
+  - id: interior_lights
+    name: Innenbeleuchtung
+    pin: 17
+    active_low: true
+    load_a: 2.0
+    shed_priority: 3
+  - id: reading_lights
+    name: Leselampen
+    pin: 27
+    active_low: true
+    load_a: 0.5
+    shed_priority: 2
+  - id: water_pump
+    name: Wasserpumpe
+    pin: 22
+    active_low: true
+    load_a: 4.0
+    shed_priority: 1
+  - id: fridge
+    name: Kühlbox
+    pin: 23
+    active_low: true
+    load_a: 3.5
+    shed_priority: 4
+  - id: usb_sockets
+    name: USB-Steckdosen
+    pin: 24
+    active_low: true
+    load_a: 1.0
+    shed_priority: 2
+  - id: roof_fan
+    name: Dachlüfter
+    pin: 25
+    active_low: true
+    load_a: 1.5
+    # kein shed_priority: wird bei Unterspannung nicht abgeschaltet
+
+sensors:
+  - type: ina226
+    id: house_battery
+    name: Aufbaubatterie
+    bus: 1
+    address: 0x40
+    shunt_ohms: 0.00075   # z. B. 100 A / 75 mV Shunt
+  - type: ds18b20
+    id: inside_temp
+    name: Innenraum
+    device_id: 28-000000000001
+  - type: ds18b20
+    id: fridge_temp
+    name: Kühlbox innen
+    device_id: 28-000000000002
+
+protection:
+  battery_sensor: house_battery
+  # AGM/Gel: ~12,0 V unter Last schont die Batterie (nicht unter 50 % entladen).
+  # LiFePO4: Spannungskurve ist sehr flach, Wert an Batterie/BMS anpassen.
+  cutoff_v: 12.0
+  recover_v: 12.8
+  cutoff_delay_s: 30

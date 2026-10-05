@@ -1,0 +1,8 @@
+{
+  "name": "Camper Control",
+  "short_name": "Camper",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#14161a",
+  "theme_color": "#14161a"
+}
