@@ -107,6 +107,10 @@ class HttpCamperApi implements CamperApi {
         throw const SwitchLockedException();
       case 404:
         throw const ApiException('Diesen Schalter kennt die Steuereinheit nicht.');
+      case 502:
+        throw const ApiException(
+          'Das Relaismodul antwortet nicht. RS485-Leitung und 12-V-Versorgung prüfen.',
+        );
       default:
         throw ApiException('Schalten fehlgeschlagen (${res.statusCode}).');
     }

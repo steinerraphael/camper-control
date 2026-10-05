@@ -7,8 +7,8 @@ Wants=network-online.target
 Type=simple
 User=camper
 Group=camper
-# gpio: Relais, i2c: INA226. 1-Wire liegt unter /sys und braucht keine Gruppe.
-SupplementaryGroups=gpio i2c
+# gpio: Relais, i2c: INA226, dialout: RS485-Relaismodul. 1-Wire braucht keine Gruppe.
+SupplementaryGroups=gpio i2c dialout
 Environment=CAMPER_CONFIG=/etc/camper-control/config.yaml
 Environment=CAMPER_PORT=8080
 Environment=CAMPER_WEB_DIR=/opt/camper-control/web

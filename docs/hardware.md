@@ -47,6 +47,25 @@
   die nach einem Spannungseinbruch unbemerkt wieder anläuft, ist schlimmer als
   Licht, das man neu einschalten muss.
 
+### Alternative: Relaismodul über RS485 (empfohlen)
+
+Statt der einfachen Relaisplatine an den GPIO-Pins: **Waveshare Modbus RTU
+Relay (D)**, die Variante mit **„(D)“ und 7–36 V**. Die gleichnamige
+Variante ohne „(D)“ braucht 5 V und hat keine Eingänge.
+
+- Versorgung direkt aus 12 V (eigene Sicherung, 1 A), Hutschiene,
+  Schraubklemmen, Freilaufdioden und Überspannungsschutz eingebaut.
+- Pi ↔ Modul: **USB-RS485-Adapter (galvanisch getrennt)** und zwei Adern
+  A/B, am besten verdrillt. Keine GPIO-Leitungen, kein 3,3-V-Problem.
+- Werkseinstellung: Adresse 1, 9600 Baud, 8N1. Relais 1–8 = `channel: 1`–`8`.
+- Lastseite wie gehabt: 12 V über Sicherung an COM, Verbraucher an NO.
+- Die 8 Eingänge (5–36 V) eignen sich später für D+ und Türkontakte;
+  die Software liest sie noch nicht.
+
+Prüfen nach dem Anschließen: `ls /dev/ttyUSB*` zeigt den Adapter.
+Antwortet das Modul nicht, meldet die App „Das Relaismodul antwortet nicht“,
+und der Schalter bleibt im alten Zustand.
+
 ## Sensoren
 
 ### Batterie: INA226 (I2C)

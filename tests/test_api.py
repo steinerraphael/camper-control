@@ -59,3 +59,21 @@ def test_built_app_is_served_and_the_api_still_wins(config, controller, tmp_path
         assert client.get("/main.dart.js").status_code == 200
         assert client.get("/api/state").json()["switches"]
         assert client.get("/health").json()["status"] == "ok"
+
+
+def test_relay_that_does_not_answer_is_502_and_state_unchanged(config, controller):
+    class Dead:
+        def set(self, on: bool) -> None:
+            raise OSError("relay module did not answer")
+
+        def close(self) -> None:
+            pass
+
+    controller._outputs["water_pump"] = Dead()
+    with TestClient(create_app(config, controller)) as client:
+        res = client.put("/api/switches/water_pump", json={"on": True})
+        assert res.status_code == 502
+        pump = next(
+            s for s in client.get("/api/state").json()["switches"] if s["id"] == "water_pump"
+        )
+        assert pump["on"] is False

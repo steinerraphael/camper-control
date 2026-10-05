@@ -19,7 +19,7 @@ raspi-config nonint do_onewire 0
 
 echo "==> Dienstnutzer"
 id camper &>/dev/null || useradd --system --no-create-home --shell /usr/sbin/nologin camper
-usermod -aG gpio,i2c camper
+usermod -aG gpio,i2c,dialout camper   # dialout: USB-RS485-Adapter
 
 echo "==> Programm nach $APP"
 mkdir -p "$APP"

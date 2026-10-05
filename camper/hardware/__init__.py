@@ -29,9 +29,20 @@ def _build_mock(config: Config) -> tuple[dict[str, Output], dict[str, Sensor]]:
 
 
 def _build_pi(config: Config) -> tuple[dict[str, Output], dict[str, Sensor]]:
+    from .modbus import ModbusOutput, ModbusRtu
     from .pi import Ds18b20, GpioOutput, Ina226
 
-    outputs: dict[str, Output] = {s.id: GpioOutput(s.pin, s.active_low) for s in config.switches}
+    bus = (
+        ModbusRtu.open(config.modbus.port, config.modbus.baudrate, config.modbus.address)
+        if config.modbus
+        else None
+    )
+    outputs: dict[str, Output] = {}
+    for s in config.switches:
+        if s.channel is not None and bus is not None:
+            outputs[s.id] = ModbusOutput(bus, s.channel)
+        elif s.pin is not None:
+            outputs[s.id] = GpioOutput(s.pin, s.active_low)
     sensors: dict[str, Sensor] = {}
     for s in config.sensors:
         if isinstance(s, Ina226Config):

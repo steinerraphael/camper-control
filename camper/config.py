@@ -19,7 +19,10 @@ DEFAULT_CONFIG = Path(__file__).resolve().parent.parent / "config" / "config.exa
 class SwitchConfig(BaseModel):
     id: str
     name: str
-    pin: int = Field(description="BCM GPIO number driving the relay or MOSFET")
+    # Exactly one of these: a relay on a GPIO pin, or a channel of the
+    # Modbus relay module configured under `modbus`.
+    pin: int | None = Field(None, description="BCM GPIO number driving the relay or MOSFET")
+    channel: int | None = Field(None, ge=1, le=8, description="Relay 1-8 of the Modbus module")
     # Most cheap relay boards switch on when the input is pulled LOW.
     active_low: bool = True
     # Rough draw in amps. Used by the mock driver and shown in the UI.
@@ -27,6 +30,20 @@ class SwitchConfig(BaseModel):
     # Lower is shed first when the battery runs low. None: never shed
     # (e.g. a ventilation fan or anything safety-related).
     shed_priority: int | None = None
+
+    @model_validator(mode="after")
+    def _one_output(self) -> SwitchConfig:
+        if (self.pin is None) == (self.channel is None):
+            raise ValueError(f"switch {self.id!r}: give either pin or channel, not both or neither")
+        return self
+
+
+class ModbusConfig(BaseModel):
+    """An RS485 relay module, e.g. Waveshare Modbus RTU Relay (D)."""
+
+    port: str = "/dev/ttyUSB0"
+    baudrate: int = 9600
+    address: int = Field(1, ge=1, le=247)
 
 
 class Ina226Config(BaseModel):
@@ -70,6 +87,7 @@ class ProtectionConfig(BaseModel):
 class Config(BaseModel):
     driver: Literal["mock", "pi"] = "mock"
     poll_interval_s: float = 2.0
+    modbus: ModbusConfig | None = None
     switches: list[SwitchConfig] = []
     sensors: list[SensorConfig] = []
     protection: ProtectionConfig | None = None
@@ -80,10 +98,16 @@ class Config(BaseModel):
         dupes = {i for i in ids if ids.count(i) > 1}
         if dupes:
             raise ValueError(f"duplicate ids: {sorted(dupes)}")
-        pins = [s.pin for s in self.switches]
+        pins = [s.pin for s in self.switches if s.pin is not None]
         dupes_pins = {p for p in pins if pins.count(p) > 1}
         if dupes_pins:
             raise ValueError(f"GPIO pin used twice: {sorted(dupes_pins)}")
+        channels = [s.channel for s in self.switches if s.channel is not None]
+        dupes_ch = {c for c in channels if channels.count(c) > 1}
+        if dupes_ch:
+            raise ValueError(f"Modbus channel used twice: {sorted(dupes_ch)}")
+        if channels and self.modbus is None:
+            raise ValueError("switches use channel, but there is no modbus section")
         if self.protection:
             battery = next(
                 (s for s in self.sensors if s.id == self.protection.battery_sensor), None

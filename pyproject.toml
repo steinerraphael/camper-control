@@ -16,6 +16,7 @@ pi = [
     "gpiozero>=2.0",
     "lgpio>=0.2",
     "smbus2>=0.4",
+    "pyserial>=3.5",
 ]
 dev = [
     "pytest>=8",

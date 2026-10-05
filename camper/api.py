@@ -14,7 +14,7 @@ from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 
 from .config import Config
-from .controller import Controller, SwitchLocked, UnknownSwitch
+from .controller import Controller, HardwareError, SwitchLocked, UnknownSwitch
 from .hardware import build_hardware
 
 WEB_DIR = Path(__file__).resolve().parent / "web"
@@ -71,6 +71,8 @@ def create_app(
             raise HTTPException(
                 409, "switched off by low-voltage protection until the battery recovers"
             ) from None
+        except HardwareError as exc:
+            raise HTTPException(502, f"relay did not switch: {exc}") from None
         return ctl.snapshot()
 
     @app.websocket("/api/ws")

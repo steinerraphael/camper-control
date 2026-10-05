@@ -26,6 +26,10 @@ class SwitchLocked(RuntimeError):
     """The switch was shed by low-voltage protection and stays off until recovery."""
 
 
+class HardwareError(RuntimeError):
+    """The relay could not be switched, e.g. the RS485 module did not answer."""
+
+
 @dataclass
 class SensorState:
     values: dict[str, float] = field(default_factory=dict)
@@ -60,7 +64,12 @@ class Controller:
             raise UnknownSwitch(switch_id)
         if on and switch_id in self._locked:
             raise SwitchLocked(switch_id)
-        self._outputs[switch_id].set(on)
+        try:
+            self._outputs[switch_id].set(on)
+        except OSError as exc:
+            # State stays as it was: the app must not show a switch that did not happen.
+            log.error("switch %s failed: %s", switch_id, exc)
+            raise HardwareError(str(exc)) from exc
         self._on[switch_id] = on
         log.info("switch %s -> %s", switch_id, "on" if on else "off")
         self._publish()

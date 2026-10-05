@@ -8,7 +8,8 @@ hat 3.11), FastAPI; die Oberfläche ist eine Flutter-App unter `app/`
 
 ```
 camper/config.py       YAML → Pydantic; prüft doppelte IDs/Pins und Hysterese
-camper/hardware/       Output/Sensor-ABCs, mock.py (überall), pi.py (nur Pi)
+camper/hardware/       Output/Sensor-ABCs, mock.py (überall), pi.py (nur Pi),
+                       modbus.py (RS485-Relaismodul, eigenes Modbus-RTU-Framing)
 camper/controller.py   einziger Besitzer von Zustand, Polling, Unterspannungsschutz
 camper/api.py          dünn: REST, WebSocket, statische UI
 camper/web/            einfache Ersatzseite, wenn keine gebaute App da ist
