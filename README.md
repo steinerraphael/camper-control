@@ -49,6 +49,8 @@ sudo nano /etc/camper-control/config.yaml   # Pins und Sensor-IDs eintragen
 sudo reboot                                 # aktiviert I2C und 1-Wire
 ```
 
+**Alles auf einen Blick als PDF** (Gesamtsetup, Handy verbinden, Bauanleitung, Einkaufsliste, Schaltplan, Leitungsliste): **[docs/camper-control-gesamtsetup.pdf](docs/camper-control-gesamtsetup.pdf)**.
+
 **Schritt-für-Schritt-Aufbau** (Einrichten, Tischtest, Einbau, Inbetriebnahme): **[docs/aufbau.md](docs/aufbau.md)**.
 
 Verkabelung, Stromversorgung und Sicherheit: **[docs/hardware.md](docs/hardware.md)**.
