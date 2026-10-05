@@ -52,7 +52,9 @@ sensors:
     name: Aufbaubatterie
     bus: 1
     address: 0x40
-    shunt_ohms: 0.00075   # z. B. 100 A / 75 mV Shunt
+    # 100 A / 75 mV Shunt. Reicht für 230 Ah AGM ohne Wechselrichter;
+    # mit Wechselrichter > 1000 W einen 200-A-Shunt nehmen (0.000375).
+    shunt_ohms: 0.00075
   - type: ds18b20
     id: inside_temp
     name: Innenraum
@@ -64,8 +66,14 @@ sensors:
 
 protection:
   battery_sensor: house_battery
-  # AGM/Gel: ~12,0 V unter Last schont die Batterie (nicht unter 50 % entladen).
-  # LiFePO4: Spannungskurve ist sehr flach, Wert an Batterie/BMS anpassen.
+  # Ausgelegt für AGM 230 Ah. Eine AGM sollte nicht unter ~50 % entladen
+  # werden (≈ 115 Ah nutzbar). 50 % entspricht ~12,2 V in Ruhe; unter
+  # typischer Camper-Last (5–10 A) sackt die Spannung um 0,1–0,2 V ab,
+  # daher 12,0 V als Schwelle.
+  # Freigabe erst bei 12,8 V: Nach dem Abschalten erholt sich eine AGM
+  # in Ruhe auf ~12,3 V. Die Sperre endet also erst, wenn wirklich geladen
+  # wird (Lichtmaschine, Solar, Landstrom), nicht schon durch die Erholung.
+  # LiFePO4 hat eine flache Kurve: Werte dann an Batterie/BMS anpassen.
   cutoff_v: 12.0
   recover_v: 12.8
   cutoff_delay_s: 30
