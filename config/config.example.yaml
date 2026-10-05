@@ -17,49 +17,33 @@ modbus:
   channels: 8             # Relais im Modul; freie Kanäle zeigt die App an
 
 switches:
-  - id: interior_lights
-    name: Innenbeleuchtung
+  - id: bed_light
+    name: Licht Bett
     channel: 1
     button: true
-    load_a: 2.0
-    shed_priority: 3
-  - id: reading_lights
-    name: Leselampen
+    load_a: 0.5
+    # kein shed_priority: Licht bleibt auch bei Unterspannung schaltbar
+  - id: bed_usb
+    name: USB-Dose Bett
     channel: 2
     button: true
-    load_a: 0.5
+    load_a: 2.0
     shed_priority: 2
   - id: water_pump
-    name: Wasserpumpe
+    name: Wasserhahn
     channel: 3
     button: true
     load_a: 4.0
     shed_priority: 1
-  - id: fridge
-    name: Kühlbox
-    channel: 4
-    button: true
-    load_a: 3.5
-    shed_priority: 4
-  - id: usb_sockets
-    name: USB-Steckdosen
-    channel: 5
-    button: true
-    load_a: 1.0
-    shed_priority: 2
-  - id: roof_fan
-    name: Dachlüfter
-    channel: 6
-    button: true
-    load_a: 1.5
-    # kein shed_priority: wird bei Unterspannung nicht abgeschaltet
+  # Kanäle 4–8 frei. PV Dach nicht über ein Relais schalten – siehe
+  # docs/hardware.md, Abschnitt „Solar (PV Dach)“.
 
 # Alternative ohne Relaismodul: Relaisplatine direkt an GPIO-Pins. Dann den
 # modbus-Abschnitt weglassen und je Schalter `pin:` (BCM-Nummer, nicht die
 # physische Pin-Nummer) statt `channel:` angeben, Taster gibt es dann nicht:
 #
-#   - id: interior_lights
-#     name: Innenbeleuchtung
+#   - id: bed_light
+#     name: Licht Bett
 #     pin: 17
 #     active_low: true
 

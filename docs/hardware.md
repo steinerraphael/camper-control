@@ -124,18 +124,32 @@ Das WLAN-Passwort ist daher die Zugangskontrolle; kein Port-Forwarding ins Inter
 
 | Anschluss | Funktion |
 |---|---|
-| Waveshare K1 / DI1 | Innenbeleuchtung / Taster S1 |
-| Waveshare K2 / DI2 | Leselampen / Taster S2 |
-| Waveshare K3 / DI3 | Wasserpumpe / Taster S3 |
-| Waveshare K4 / DI4 | Kühlbox / Taster S4 |
-| Waveshare K5 / DI5 | USB-Steckdosen / Taster S5 |
-| Waveshare K6 / DI6 | Dachlüfter / Taster S6 |
-| Waveshare K7, K8 | frei (die App zeigt sie als frei an) |
+| Waveshare K1 / DI1 | Licht Bett / Taster S1 |
+| Waveshare K2 / DI2 | USB-Dose Bett / Taster S2 |
+| Waveshare K3 / DI3 | Pumpe Wasserhahn / Taster S3 |
+| Waveshare K4–K8 | frei (die App zeigt sie als frei an) |
 | Waveshare DI7 | D+ über Kfz-Relais (vorbereitet) |
 | Pi GPIO 2 / 3 (Pin 3 / 5) | I2C SDA/SCL (INA226) |
 | Pi GPIO 4 (Pin 7) | 1-Wire (DS18B20) |
 | Pi USB | USB-RS485-Adapter |
 
-Ohne Relaismodul (Relaisplatine an GPIO) gilt die alte Belegung: GPIO 17,
-27, 22, 23, 24, 25 für die sechs Verbraucher, siehe Kommentar in
+Ohne Relaismodul (Relaisplatine an GPIO) siehe Kommentar in
 `config/config.example.yaml`.
+
+## Solar (PV Dach)
+
+Die PV-Anlage wird **nicht** über ein Relais des Verteilers geschaltet:
+
+- Die Leerlaufspannung der Module (ein 12-V-Modul ≈ 22 V, zwei in Reihe
+  ≈ 45 V) liegt an oder über den 30 V DC, für die die Relaiskontakte
+  ausgelegt sind. Gleichstrom aus den Modulen zieht beim Öffnen einen
+  Lichtbogen, den ein kleines Relais nicht sicher löscht.
+- Wird der Akku vom Laderegler getrennt, während die Module liefern, kann
+  der Regler beschädigt werden.
+
+Richtig ist: Modul → **DC-tauglicher PV-Trennschalter** → **MPPT-Laderegler**
+→ Aufbaubatterie (mit eigener Sicherung am Reglerausgang, Minus an X2, damit
+der Shunt mitmisst). In die App kommt die PV über den Laderegler: Ertrag,
+Ladestrom und Zustand lesen und, wo der Regler das kann, das Laden ein- und
+ausschalten. Bei Victron-Reglern geht das über VE.Direct (geplante
+Ausbaustufe).

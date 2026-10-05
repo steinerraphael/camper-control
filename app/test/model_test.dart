@@ -13,7 +13,7 @@ void main() {
 
     expect(state.switches.map((s) => s.id), contains('water_pump'));
     final pump = state.switches.firstWhere((s) => s.id == 'water_pump');
-    expect(pump.name, 'Wasserpumpe');
+    expect(pump.name, 'Wasserhahn');
     expect(pump.loadA, 4.0);
     expect(pump.channel, 3);
     expect(pump.button, isTrue);

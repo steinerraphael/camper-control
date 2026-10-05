@@ -10,11 +10,11 @@ def test_state_and_switching(config, controller):
         assert client.get("/health").json() == {"status": "ok", "driver": "mock"}
 
         state = client.get("/api/state").json()
-        assert {s["id"] for s in state["switches"]} >= {"water_pump", "fridge"}
+        assert {s["id"] for s in state["switches"]} >= {"water_pump", "bed_usb"}
 
-        res = client.put("/api/switches/fridge", json={"on": True})
+        res = client.put("/api/switches/bed_usb", json={"on": True})
         assert res.status_code == 200
-        assert next(s for s in res.json()["switches"] if s["id"] == "fridge")["on"]
+        assert next(s for s in res.json()["switches"] if s["id"] == "bed_usb")["on"]
 
 
 def test_unknown_switch_is_404(config, controller):
@@ -39,9 +39,9 @@ def test_websocket_pushes_changes(config, controller):
         client.websocket_connect("/api/ws") as ws,
     ):
         ws.receive_json()  # initial snapshot
-        client.put("/api/switches/reading_lights", json={"on": True})
+        client.put("/api/switches/bed_light", json={"on": True})
         snap = ws.receive_json()
-        assert next(s for s in snap["switches"] if s["id"] == "reading_lights")["on"]
+        assert next(s for s in snap["switches"] if s["id"] == "bed_light")["on"]
 
 
 def test_simple_page_without_a_built_app(config, controller, tmp_path):

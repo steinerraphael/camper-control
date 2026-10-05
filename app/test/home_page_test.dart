@@ -42,24 +42,24 @@ void main() {
     await pumpApp(tester);
     expect(find.text('Verbunden'), findsWidgets);
     expect(find.text('Batterie'), findsOneWidget);
-    expect(find.text('0 / 6 an'), findsOneWidget);
+    expect(find.text('0 / 3 an'), findsOneWidget);
   });
 
   testWidgets('quick access switches from the start page', (tester) async {
     await pumpApp(tester);
     // scrollUntilVisible stops once the chip is built, which can be just
     // below the screen edge; ensureVisible brings it fully into view.
-    await tester.ensureVisible(find.text('Wasserpumpe'));
+    await tester.ensureVisible(find.text('Wasserhahn'));
     await tester.pumpAndSettle();
-    await tester.tap(find.text('Wasserpumpe'));
+    await tester.tap(find.text('Wasserhahn'));
     await tester.pumpAndSettle();
-    expect(find.text('1 / 6 an'), findsOneWidget);
+    expect(find.text('1 / 3 an'), findsOneWidget);
   });
 
   testWidgets('menu leads to the switches page, and a tile switches', (tester) async {
     await pumpApp(tester);
     await openPage(tester, 'Schalter');
-    await tester.tap(find.text('Wasserpumpe'));
+    await tester.tap(find.text('Wasserhahn'));
     await tester.pumpAndSettle();
     expect(find.text('K3 · An · 4,0 A'), findsOneWidget);
   });
@@ -68,9 +68,9 @@ void main() {
     await pumpApp(tester);
     await openPage(tester, 'Schalter');
     expect(find.text('Verteiler'), findsOneWidget);
-    expect(find.text('8 Kanäle · 6 belegt · 2 frei'), findsOneWidget);
+    expect(find.text('8 Kanäle · 3 belegt · 5 frei'), findsOneWidget);
     expect(find.bySemanticsLabel('Kanal 7 frei'), findsOneWidget);
-    expect(find.bySemanticsLabel('Kanal 3, Wasserpumpe, aus'), findsOneWidget);
+    expect(find.bySemanticsLabel('Kanal 3, Wasserhahn, aus'), findsOneWidget);
   });
 
   testWidgets('every page renders on a small phone', (tester) async {
@@ -101,7 +101,7 @@ void main() {
     expect(find.text('Unterspannungsschutz aktiv'), findsOneWidget);
 
     await openPage(tester, 'Schalter');
-    await tester.tap(find.text('Wasserpumpe'));
+    await tester.tap(find.text('Wasserhahn'));
     await tester.pump();
     expect(find.text(const SwitchLockedException().message), findsOneWidget);
     await tester.pumpAndSettle(const Duration(seconds: 5));

@@ -39,12 +39,9 @@ class DemoCamperApi implements CamperApi {
   static const capacityAh = 230.0;
 
   final _switches = [
-    _DemoSwitch(1, 'interior_lights', 'Innenbeleuchtung', 2.0, 3),
-    _DemoSwitch(2, 'reading_lights', 'Leselampen', 0.5, 2),
-    _DemoSwitch(3, 'water_pump', 'Wasserpumpe', 4.0, 1),
-    _DemoSwitch(4, 'fridge', 'Kühlbox', 3.5, 4),
-    _DemoSwitch(5, 'usb_sockets', 'USB-Steckdosen', 1.0, 2),
-    _DemoSwitch(6, 'roof_fan', 'Dachlüfter', 1.5, null),
+    _DemoSwitch(1, 'bed_light', 'Licht Bett', 0.5, null),
+    _DemoSwitch(2, 'bed_usb', 'USB-Dose Bett', 2.0, 2),
+    _DemoSwitch(3, 'water_pump', 'Wasserhahn', 4.0, 1),
   ];
 
   final _states = StreamController<CamperState>.broadcast();
@@ -65,8 +62,8 @@ class DemoCamperApi implements CamperApi {
   /// Advances the simulation by one second. Public for tests.
   void tick() {
     _t++;
-    final fridgeOn = _switches.firstWhere((s) => s.id == 'fridge').on;
-    _fridgeTemp += fridgeOn ? (4 - _fridgeTemp) * 0.05 : (14 - _fridgeTemp) * 0.01;
+    // The fridge runs on its own thermostat; it is not one of the switches.
+    _fridgeTemp += (5 - _fridgeTemp) * 0.03;
     _checkProtection();
     _emit();
   }

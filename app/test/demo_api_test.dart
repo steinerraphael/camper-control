@@ -19,7 +19,7 @@ void main() {
 
   test('a flat battery sheds loads after the delay, and charging releases them', () async {
     await api.setSwitch('water_pump', true);
-    await api.setSwitch('roof_fan', true);
+    await api.setSwitch('bed_light', true);
     api.scenario = DemoScenario.lowBattery;
 
     for (var i = 0; i < DemoCamperApi.cutoffDelayS - 1; i++) {
@@ -35,7 +35,7 @@ void main() {
     expect(s.protection.active, isTrue);
     expect(sw(s, 'water_pump').on, isFalse);
     expect(sw(s, 'water_pump').locked, isTrue);
-    expect(sw(s, 'roof_fan').on, isTrue, reason: 'the fan has no shed priority');
+    expect(sw(s, 'bed_light').on, isTrue, reason: 'the bed light has no shed priority');
     expect(() => api.setSwitch('water_pump', true), throwsA(isA<SwitchLockedException>()));
 
     api

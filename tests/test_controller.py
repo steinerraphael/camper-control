@@ -40,7 +40,7 @@ async def test_short_dip_does_not_shed(controller, battery, clock):
 
 async def test_sustained_low_voltage_sheds_and_locks(controller, battery, clock):
     controller.set_switch("water_pump", True)
-    controller.set_switch("roof_fan", True)
+    controller.set_switch("bed_light", True)
     battery.voltage_override = 11.5
     await controller.poll_once()
     clock.now = 31
@@ -49,12 +49,12 @@ async def test_sustained_low_voltage_sheds_and_locks(controller, battery, clock)
     assert controller.snapshot()["protection"]["active"]
     assert not switch(controller, "water_pump")["on"]
     assert switch(controller, "water_pump")["locked"]
-    # No shed_priority: a ventilation fan stays on.
-    assert switch(controller, "roof_fan")["on"]
+    # No shed_priority: the bed light stays on.
+    assert switch(controller, "bed_light")["on"]
     with pytest.raises(SwitchLocked):
         controller.set_switch("water_pump", True)
     # Switching off is always allowed.
-    controller.set_switch("roof_fan", False)
+    controller.set_switch("bed_light", False)
 
 
 async def test_recovery_unlocks_without_switching_back_on(controller, battery, clock):
@@ -96,16 +96,16 @@ async def test_failing_battery_sensor_does_not_trigger_protection(controller, cl
 
 async def test_subscribers_get_pushed_state(controller):
     q = controller.subscribe()
-    controller.set_switch("fridge", True)
+    controller.set_switch("bed_usb", True)
     snap = q.get_nowait()
-    assert next(s for s in snap["switches"] if s["id"] == "fridge")["on"]
+    assert next(s for s in snap["switches"] if s["id"] == "bed_usb")["on"]
 
 
 async def test_hand_switching_is_picked_up(controller):
-    controller._outputs["fridge"].on = True  # as if a pushbutton had switched it
-    controller._outputs["fridge"].read = lambda: controller._outputs["fridge"].on
+    controller._outputs["bed_usb"].on = True  # as if a pushbutton had switched it
+    controller._outputs["bed_usb"].read = lambda: controller._outputs["bed_usb"].on
     await controller.poll_once()
-    assert switch(controller, "fridge")["on"]
+    assert switch(controller, "bed_usb")["on"]
 
 
 async def test_hand_switching_cannot_beat_the_protection(controller, battery, clock):
