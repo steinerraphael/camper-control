@@ -66,6 +66,9 @@ def test_relay_that_does_not_answer_is_502_and_state_unchanged(config, controlle
         def set(self, on: bool) -> None:
             raise OSError("relay module did not answer")
 
+        def read(self) -> None:
+            return None
+
         def close(self) -> None:
             pass
 

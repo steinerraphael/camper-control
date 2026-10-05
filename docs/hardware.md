@@ -54,13 +54,25 @@ Relay (D)**, die Variante mit **„(D)“ und 7–36 V**. Die gleichnamige
 Variante ohne „(D)“ braucht 5 V und hat keine Eingänge.
 
 - Versorgung direkt aus 12 V (eigene Sicherung, 1 A), Hutschiene,
-  Schraubklemmen, Freilaufdioden und Überspannungsschutz eingebaut.
+  Schraubklemmen, Überspannungsschutz. Die eingebauten Freilaufdioden
+  schützen nur die eigenen Relaisspulen; Pumpe, Kühlbox und Lüfter brauchen
+  trotzdem je eine Freilaufdiode (z. B. 1N5408) direkt am Gerät.
 - Pi ↔ Modul: **USB-RS485-Adapter (galvanisch getrennt)** und zwei Adern
   A/B, am besten verdrillt. Keine GPIO-Leitungen, kein 3,3-V-Problem.
 - Werkseinstellung: Adresse 1, 9600 Baud, 8N1. Relais 1–8 = `channel: 1`–`8`.
 - Lastseite wie gehabt: 12 V über Sicherung an COM, Verbraucher an NO.
-- Die 8 Eingänge (5–36 V) eignen sich später für D+ und Türkontakte;
-  die Software liest sie noch nicht.
+- **Taster:** Mit `button: true` an einem Schalter stellt die Software den
+  Eingang gleicher Nummer (DI1 für Relais 1 …) auf Toggle-Modus. Ein
+  Druck schaltet um, direkt im Modul, also auch wenn der Pi aus ist. Die
+  App liest die Relais alle paar Sekunden zurück und zeigt den echten Zustand.
+  Taster potenzialfrei zwischen DIx und DGND, COM frei lassen.
+- Hat der Unterspannungsschutz einen Verbraucher gesperrt, schaltet ihn die
+  Software nach einem Tastendruck beim nächsten Abgleich wieder aus.
+- **D+** nicht direkt an einen Eingang: Es ist ein 12-V-Signal und verträgt
+  sich nicht mit den potenzialfreien Tastern an derselben COM-Klemme. Ein
+  kleines Kfz-Relais (Spule an D+) macht daraus einen potenzialfreien Kontakt
+  für DI7. Die Software liest D+ noch nicht.
+- Startet der Pi neu, schaltet er zunächst alle Relais aus.
 
 Prüfen nach dem Anschließen: `ls /dev/ttyUSB*` zeigt den Adapter.
 Antwortet das Modul nicht, meldet die App „Das Relaismodul antwortet nicht“,

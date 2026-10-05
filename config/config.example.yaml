@@ -20,6 +20,7 @@ poll_interval_s: 2
 #   - id: interior_lights
 #     name: Innenbeleuchtung
 #     channel: 1
+#     button: true          # Taster an DI1 schaltet Relais 1 um, auch ohne Pi
 #     load_a: 2.0
 #     shed_priority: 3
 

@@ -99,3 +99,25 @@ async def test_subscribers_get_pushed_state(controller):
     controller.set_switch("fridge", True)
     snap = q.get_nowait()
     assert next(s for s in snap["switches"] if s["id"] == "fridge")["on"]
+
+
+async def test_hand_switching_is_picked_up(controller):
+    controller._outputs["fridge"].on = True  # as if a pushbutton had switched it
+    controller._outputs["fridge"].read = lambda: controller._outputs["fridge"].on
+    await controller.poll_once()
+    assert switch(controller, "fridge")["on"]
+
+
+async def test_hand_switching_cannot_beat_the_protection(controller, battery, clock):
+    pump = controller._outputs["water_pump"]
+    pump.read = lambda: pump.on
+    battery.voltage_override = 11.5
+    await controller.poll_once()
+    clock.now = 31
+    await controller.poll_once()
+    assert switch(controller, "water_pump")["locked"]
+
+    pump.on = True  # pushbutton pressed while locked
+    await controller.poll_once()
+    assert pump.on is False
+    assert not switch(controller, "water_pump")["on"]

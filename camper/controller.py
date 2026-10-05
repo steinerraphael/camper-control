@@ -86,8 +86,31 @@ class Controller:
             except Exception as exc:  # a flaky sensor must not stop the loop
                 state.error = str(exc) or type(exc).__name__
                 log.warning("sensor %s failed: %s", sensor_id, state.error)
+        await self._sync_outputs()
         self._check_protection()
         self._publish()
+
+    async def _sync_outputs(self) -> None:
+        """Pick up switching done outside the app, e.g. with a pushbutton."""
+        for switch_id, out in self._outputs.items():
+            try:
+                actual = await asyncio.to_thread(out.read)
+            except OSError as exc:
+                log.warning("reading switch %s failed: %s", switch_id, exc)
+                continue
+            if actual is None or actual == self._on[switch_id]:
+                continue
+            if actual and switch_id in self._locked:
+                # A button bypasses the software; the protection still wins.
+                log.warning("switch %s turned on by hand while locked, off again", switch_id)
+                try:
+                    await asyncio.to_thread(out.set, False)
+                except OSError as exc:
+                    log.error("switching %s back off failed: %s", switch_id, exc)
+                    self._on[switch_id] = True
+                continue
+            log.info("switch %s -> %s (by hand)", switch_id, "on" if actual else "off")
+            self._on[switch_id] = actual
 
     def _check_protection(self) -> None:
         p = self.config.protection

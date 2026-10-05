@@ -40,7 +40,7 @@ def _build_pi(config: Config) -> tuple[dict[str, Output], dict[str, Sensor]]:
     outputs: dict[str, Output] = {}
     for s in config.switches:
         if s.channel is not None and bus is not None:
-            outputs[s.id] = ModbusOutput(bus, s.channel)
+            outputs[s.id] = ModbusOutput(bus, s.channel, button=s.button)
         elif s.pin is not None:
             outputs[s.id] = GpioOutput(s.pin, s.active_low)
     sensors: dict[str, Sensor] = {}

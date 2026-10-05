@@ -1,11 +1,12 @@
 """Relay modules on an RS485 bus, spoken to in Modbus RTU.
 
 Written against the Waveshare Modbus RTU Relay (D): coil 0-7 are relays
-1-8, and function 05 switches one. Any module that follows the standard
-coil function works the same way.
+1-8; function 05 switches one, 01 reads them back. Register 0x1000-0x1007
+sets what the module's own inputs DI1-DI8 do to the relay of the same
+number - 2 makes a pushbutton toggle it, without the Pi.
 
-The framing is done here rather than through a Modbus library: it is one
-request type and a CRC, and the libraries have changed their APIs often
+The framing is done here rather than through a Modbus library: it is three
+request types and a CRC, and the libraries have changed their APIs often
 enough that pinning one costs more than these lines do.
 """
 
@@ -16,9 +17,14 @@ from typing import Any, Protocol
 
 from .base import Output
 
+READ_COILS = 0x01
 WRITE_SINGLE_COIL = 0x05
+WRITE_REGISTER = 0x06
 COIL_ON = 0xFF00
 COIL_OFF = 0x0000
+INPUT_MODE_BASE = 0x1000
+MODE_COMMAND_ONLY = 0x0000
+MODE_TOGGLE = 0x0002
 
 
 def crc16(data: bytes) -> bytes:
@@ -92,15 +98,38 @@ class ModbusRtu:
         if self._request(request, len(request)) != request:
             raise ModbusError("relay module did not confirm the switch")
 
+    def write_register(self, register: int, value: int) -> None:
+        request = frame(self._address, WRITE_REGISTER, register, value)
+        if self._request(request, len(request)) != request:
+            raise ModbusError("relay module did not confirm the setting")
+
+    def read_coil(self, index: int) -> bool:
+        reply = self._request(frame(self._address, READ_COILS, index, 1), 6)
+        return bool(reply[3] & 1)
+
 
 class ModbusOutput(Output):
-    """One relay of the module. Channel 1-8 as printed on the case."""
+    """One relay of the module. Channel 1-8 as printed on the case.
 
-    def __init__(self, bus: ModbusRtu, channel: int) -> None:
+    With `button`, the input of the same number toggles the relay inside the
+    module, so a pushbutton works even while the Pi is down. The module's
+    state is then the truth, and `read` is how the controller learns of it.
+    """
+
+    def __init__(self, bus: ModbusRtu, channel: int, button: bool = False) -> None:
         self._bus = bus
         self._index = channel - 1
+        # Set on every start, either way: whether the module keeps the mode
+        # across power cycles is undocumented, and a removed button must not
+        # stay active.
+        self._bus.write_register(
+            INPUT_MODE_BASE + self._index, MODE_TOGGLE if button else MODE_COMMAND_ONLY
+        )
         # Same rule as GPIO: everything starts off.
         self._bus.write_coil(self._index, False)
 
     def set(self, on: bool) -> None:
         self._bus.write_coil(self._index, on)
+
+    def read(self) -> bool | None:
+        return self._bus.read_coil(self._index)

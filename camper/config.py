@@ -23,6 +23,9 @@ class SwitchConfig(BaseModel):
     # Modbus relay module configured under `modbus`.
     pin: int | None = Field(None, description="BCM GPIO number driving the relay or MOSFET")
     channel: int | None = Field(None, ge=1, le=8, description="Relay 1-8 of the Modbus module")
+    # A pushbutton on input DI<channel> of the module toggles this relay,
+    # also while the Pi is down.
+    button: bool = False
     # Most cheap relay boards switch on when the input is pulled LOW.
     active_low: bool = True
     # Rough draw in amps. Used by the mock driver and shown in the UI.
@@ -35,6 +38,8 @@ class SwitchConfig(BaseModel):
     def _one_output(self) -> SwitchConfig:
         if (self.pin is None) == (self.channel is None):
             raise ValueError(f"switch {self.id!r}: give either pin or channel, not both or neither")
+        if self.button and self.channel is None:
+            raise ValueError(f"switch {self.id!r}: a button needs a Modbus channel")
         return self
 
 

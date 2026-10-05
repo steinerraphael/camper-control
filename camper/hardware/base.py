@@ -11,6 +11,11 @@ class Output(ABC):
     @abstractmethod
     def set(self, on: bool) -> None: ...
 
+    def read(self) -> bool | None:
+        """The actual state, when the hardware can be switched by other means
+        (a pushbutton on a relay module). None: only this program switches it."""
+        return None
+
     def close(self) -> None:  # noqa: B027 - optional hook
         pass
 
