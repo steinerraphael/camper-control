@@ -76,6 +76,14 @@ Sechs Phasen, in dieser Reihenfolge: erst am Schreibtisch und auf dem Tisch, dan
 7. Wechselrichter wieder einschalten, PV-Trennschalter ein. Bei Sonne muss der Strom in der App positiv werden („lädt“).
 8. Unterspannungsschutz verstehen: unter 12,0 V für 30 s werden USB-Dose und Wasserhahn gesperrt, Licht Bett bleibt.
 
+## Handy verbinden (ohne Router)
+
+1. Auf dem Pi einmal: `sudo deploy/hotspot.sh` – fragt nach einem WLAN-Passwort. Eine SSH-Verbindung über WLAN bricht dabei ab; das ist so gewollt, der Pi ist jetzt selbst das WLAN.
+2. Handy mit dem WLAN **„Camper“** verbinden. Meldet das Handy „Kein Internetzugang“: **„Verbindung beibehalten“** wählen, sonst wechselt Android auf mobile Daten.
+3. Im Browser **http://camper.local:8080** öffnen (falls das nicht lädt: **http://10.42.0.1:8080**).
+4. Als App ablegen – iPhone (Safari): Teilen → „Zum Home-Bildschirm“, öffnet dann im Vollbild. Android (Chrome): Menü ⋮ → „Zum Startbildschirm hinzufügen“.
+5. Später wieder ins Heim-WLAN (z. B. für Updates): `sudo deploy/hotspot.sh off`, oder per LAN-Kabel verbinden.
+
 **Fertig**, wenn alle Werte plausibel sind und App und Taster alle drei Verbraucher schalten. Danach optional: Fernbedienung RC4 nachmessen ([ective-rc4-messen.md](ective-rc4-messen.md)), um den Wechselrichter in die App zu holen.
 
 ## Konfiguration auf dem Pi

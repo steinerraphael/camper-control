@@ -104,8 +104,9 @@ Zwei sinnvolle Varianten:
 
 1. **Vorhandener Camper-Router (LTE)**: Der Pi verbindet sich per WLAN oder LAN,
    das Handy ist im selben Netz. Erreichbar unter `http://<hostname>.local:8080`.
-2. **Pi als eigener Access Point**: ohne Router. Mit NetworkManager (ab
-   Bookworm): `nmcli dev wifi hotspot ifname wlan0 ssid Camper password <…>`.
+2. **Pi als eigener Access Point** (ohne Router): `sudo deploy/hotspot.sh`
+   richtet das WLAN „Camper“ mit Passwort ein, dauerhaft und mit fester
+   Adresse 10.42.0.1. Zurück mit `sudo deploy/hotspot.sh off`.
 
 Die Weboberfläche hat **noch keine Anmeldung**. Wer im WLAN ist, kann schalten.
 Das WLAN-Passwort ist daher die Zugangskontrolle; kein Port-Forwarding ins Internet.
