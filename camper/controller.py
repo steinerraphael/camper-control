@@ -141,6 +141,7 @@ class Controller:
                     "values": self._sensor_state[s.id].values,
                     "error": self._sensor_state[s.id].error,
                     "updated_at": self._sensor_state[s.id].updated_at,
+                    "capacity_ah": getattr(s, "capacity_ah", None),
                 }
                 for s in self.config.sensors
             ],

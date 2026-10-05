@@ -36,6 +36,8 @@ class Ina226Config(BaseModel):
     bus: int = 1
     address: int = 0x40
     shunt_ohms: float = 0.001
+    # Nominal capacity. Lets the app estimate the time left; nothing else uses it.
+    capacity_ah: float | None = None
 
 
 class Ds18b20Config(BaseModel):

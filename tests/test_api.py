@@ -44,8 +44,18 @@ def test_websocket_pushes_changes(config, controller):
         assert next(s for s in snap["switches"] if s["id"] == "reading_lights")["on"]
 
 
-def test_ui_is_served(config, controller):
-    with TestClient(create_app(config, controller)) as client:
+def test_simple_page_without_a_built_app(config, controller, tmp_path):
+    with TestClient(create_app(config, controller, web_dir=tmp_path)) as client:
         res = client.get("/")
         assert res.status_code == 200
         assert "Camper" in res.text
+
+
+def test_built_app_is_served_and_the_api_still_wins(config, controller, tmp_path):
+    (tmp_path / "index.html").write_text("<title>flutter app</title>")
+    (tmp_path / "main.dart.js").write_text("// app")
+    with TestClient(create_app(config, controller, web_dir=tmp_path)) as client:
+        assert "flutter app" in client.get("/").text
+        assert client.get("/main.dart.js").status_code == 200
+        assert client.get("/api/state").json()["switches"]
+        assert client.get("/health").json()["status"] == "ok"

@@ -1,0 +1,89 @@
+{
+  "switches": [
+    {
+      "id": "interior_lights",
+      "name": "Innenbeleuchtung",
+      "on": false,
+      "locked": false,
+      "load_a": 2.0
+    },
+    {
+      "id": "reading_lights",
+      "name": "Leselampen",
+      "on": false,
+      "locked": false,
+      "load_a": 0.5
+    },
+    {
+      "id": "water_pump",
+      "name": "Wasserpumpe",
+      "on": true,
+      "locked": false,
+      "load_a": 4.0
+    },
+    {
+      "id": "fridge",
+      "name": "Kühlbox",
+      "on": false,
+      "locked": false,
+      "load_a": 3.5
+    },
+    {
+      "id": "usb_sockets",
+      "name": "USB-Steckdosen",
+      "on": false,
+      "locked": false,
+      "load_a": 1.0
+    },
+    {
+      "id": "roof_fan",
+      "name": "Dachlüfter",
+      "on": false,
+      "locked": false,
+      "load_a": 1.5
+    }
+  ],
+  "sensors": [
+    {
+      "id": "house_battery",
+      "name": "Aufbaubatterie",
+      "type": "ina226",
+      "values": {
+        "voltage": 12.72,
+        "current": -4.0,
+        "power": -50.9
+      },
+      "error": null,
+      "updated_at": 1760000000.0,
+      "capacity_ah": 230.0
+    },
+    {
+      "id": "inside_temp",
+      "name": "Innenraum",
+      "type": "ds18b20",
+      "values": {
+        "temperature": 18.7
+      },
+      "error": null,
+      "updated_at": 1760000000.0,
+      "capacity_ah": null
+    },
+    {
+      "id": "fridge_temp",
+      "name": "Kühlbox innen",
+      "type": "ds18b20",
+      "values": {
+        "temperature": 4.9
+      },
+      "error": null,
+      "updated_at": 1760000000.0,
+      "capacity_ah": null
+    }
+  ],
+  "protection": {
+    "enabled": true,
+    "active": false,
+    "cutoff_v": 12.0,
+    "recover_v": 12.8
+  }
+}

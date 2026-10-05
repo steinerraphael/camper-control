@@ -28,6 +28,15 @@ python3 -m venv "$APP/.venv"
 "$APP/.venv/bin/pip" install -q --upgrade pip
 "$APP/.venv/bin/pip" install -q "$APP[pi]"
 
+# Flutter gibt es auf dem Pi nicht; die App wird vorher am Rechner gebaut
+# (make app-build). Fehlt sie, liefert der Pi die einfache Webseite aus.
+if [[ -f "$SRC/app/build/web/index.html" ]]; then
+  rm -rf "$APP/web" && cp -r "$SRC/app/build/web" "$APP/web"
+  echo "    Flutter-App nach $APP/web kopiert"
+else
+  echo "    Keine gebaute App gefunden (make app-build) – einfache Webseite aktiv"
+fi
+
 echo "==> Konfiguration"
 mkdir -p "$ETC"
 if [[ ! -f "$ETC/config.yaml" ]]; then

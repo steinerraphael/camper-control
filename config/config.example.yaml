@@ -55,6 +55,7 @@ sensors:
     # 100 A / 75 mV Shunt. Reicht für 230 Ah AGM ohne Wechselrichter;
     # mit Wechselrichter > 1000 W einen 200-A-Shunt nehmen (0.000375).
     shunt_ohms: 0.00075
+    capacity_ah: 230
   - type: ds18b20
     id: inside_temp
     name: Innenraum
@@ -67,7 +68,7 @@ sensors:
 protection:
   battery_sensor: house_battery
   # Ausgelegt für AGM 230 Ah. Eine AGM sollte nicht unter ~50 % entladen
-  # werden (≈ 115 Ah nutzbar). 50 % entspricht ~12,2 V in Ruhe; unter
+  # werden (≈ 115 Ah nutzbar). 50 % entspricht ~12,3 V in Ruhe; unter
   # typischer Camper-Last (5–10 A) sackt die Spannung um 0,1–0,2 V ab,
   # daher 12,0 V als Schwelle.
   # Freigabe erst bei 12,8 V: Nach dem Abschalten erholt sich eine AGM
