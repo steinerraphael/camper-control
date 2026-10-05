@@ -7,61 +7,61 @@
 driver: mock          # mock | pi
 poll_interval_s: 2
 
-# Relais über RS485 statt GPIO, z. B. Waveshare Modbus RTU Relay (D):
-# Abschnitt einkommentieren und bei den Schaltern `channel: 1` … `8`
-# (Aufdruck am Gehäuse) statt `pin:` eintragen. Pro Schalter genau eins.
-#
-# modbus:
-#   port: /dev/ttyUSB0      # USB-RS485-Adapter
-#   baudrate: 9600          # Werkseinstellung
-#   address: 1              # Werkseinstellung
-#
-# switches:
-#   - id: interior_lights
-#     name: Innenbeleuchtung
-#     channel: 1
-#     button: true          # Taster an DI1 schaltet Relais 1 um, auch ohne Pi
-#     load_a: 2.0
-#     shed_priority: 3
+# Verteiler: Waveshare Modbus RTU Relay (D) am USB-RS485-Adapter.
+# channel = Relais 1–8 (Aufdruck am Gehäuse). button: true = Taster am
+# Eingang gleicher Nummer (DI1 für Relais 1) schaltet um, auch ohne Pi.
+modbus:
+  port: /dev/ttyUSB0      # USB-RS485-Adapter
+  baudrate: 9600          # Werkseinstellung
+  address: 1              # Werkseinstellung
+  channels: 8             # Relais im Modul; freie Kanäle zeigt die App an
 
 switches:
-  # pin = BCM-GPIO-Nummer (nicht die physische Pin-Nummer am Header!)
   - id: interior_lights
     name: Innenbeleuchtung
-    pin: 17
-    active_low: true
+    channel: 1
+    button: true
     load_a: 2.0
     shed_priority: 3
   - id: reading_lights
     name: Leselampen
-    pin: 27
-    active_low: true
+    channel: 2
+    button: true
     load_a: 0.5
     shed_priority: 2
   - id: water_pump
     name: Wasserpumpe
-    pin: 22
-    active_low: true
+    channel: 3
+    button: true
     load_a: 4.0
     shed_priority: 1
   - id: fridge
     name: Kühlbox
-    pin: 23
-    active_low: true
+    channel: 4
+    button: true
     load_a: 3.5
     shed_priority: 4
   - id: usb_sockets
     name: USB-Steckdosen
-    pin: 24
-    active_low: true
+    channel: 5
+    button: true
     load_a: 1.0
     shed_priority: 2
   - id: roof_fan
     name: Dachlüfter
-    pin: 25
-    active_low: true
+    channel: 6
+    button: true
     load_a: 1.5
     # kein shed_priority: wird bei Unterspannung nicht abgeschaltet
+
+# Alternative ohne Relaismodul: Relaisplatine direkt an GPIO-Pins. Dann den
+# modbus-Abschnitt weglassen und je Schalter `pin:` (BCM-Nummer, nicht die
+# physische Pin-Nummer) statt `channel:` angeben, Taster gibt es dann nicht:
+#
+#   - id: interior_lights
+#     name: Innenbeleuchtung
+#     pin: 17
+#     active_low: true
 
 sensors:
   - type: ina226

@@ -120,15 +120,22 @@ Das WLAN-Passwort ist daher die Zugangskontrolle; kein Port-Forwarding ins Inter
   galvanisch getrenntem Interface anschließen. Schreiben auf den Fahrzeugbus
   kann Steuergeräte stören. Nicht Teil der ersten Ausbaustufe.
 
-## Pin-Belegung (Beispielkonfiguration)
+## Belegung (Beispielkonfiguration)
 
-| BCM-GPIO | Header-Pin | Funktion |
-|---|---|---|
-| 2 / 3 | 3 / 5 | I2C SDA/SCL (INA226) |
-| 4 | 7 | 1-Wire (DS18B20) |
-| 17 | 11 | Innenbeleuchtung |
-| 27 | 13 | Leselampen |
-| 22 | 15 | Wasserpumpe |
-| 23 | 16 | Kühlbox |
-| 24 | 18 | USB-Steckdosen |
-| 25 | 22 | Dachlüfter |
+| Anschluss | Funktion |
+|---|---|
+| Waveshare K1 / DI1 | Innenbeleuchtung / Taster S1 |
+| Waveshare K2 / DI2 | Leselampen / Taster S2 |
+| Waveshare K3 / DI3 | Wasserpumpe / Taster S3 |
+| Waveshare K4 / DI4 | Kühlbox / Taster S4 |
+| Waveshare K5 / DI5 | USB-Steckdosen / Taster S5 |
+| Waveshare K6 / DI6 | Dachlüfter / Taster S6 |
+| Waveshare K7, K8 | frei (die App zeigt sie als frei an) |
+| Waveshare DI7 | D+ über Kfz-Relais (vorbereitet) |
+| Pi GPIO 2 / 3 (Pin 3 / 5) | I2C SDA/SCL (INA226) |
+| Pi GPIO 4 (Pin 7) | 1-Wire (DS18B20) |
+| Pi USB | USB-RS485-Adapter |
+
+Ohne Relaismodul (Relaisplatine an GPIO) gilt die alte Belegung: GPIO 17,
+27, 22, 23, 24, 25 für die sechs Verbraucher, siehe Kommentar in
+`config/config.example.yaml`.

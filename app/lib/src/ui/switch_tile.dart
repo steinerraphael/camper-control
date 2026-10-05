@@ -75,11 +75,12 @@ class _SwitchTileState extends ConsumerState<SwitchTile> {
     final (icon, color) = switchLook(sw.id);
     final on = sw.on;
 
-    final status = sw.locked
+    final state = sw.locked
         ? 'Gesperrt'
         : on
             ? (sw.loadA > 0 ? 'An · ${fmt(sw.loadA, 1)} A' : 'An')
             : 'Aus';
+    final status = sw.channel == null ? state : 'K${sw.channel} · $state';
 
     return Semantics(
       button: true,
@@ -146,6 +147,8 @@ class _SwitchTileState extends ConsumerState<SwitchTile> {
                 const SizedBox(height: 3),
                 Text(
                   status,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                   style: TextStyle(
                     fontSize: 12.5,
                     color: sw.locked ? AppColors.red : (on ? color : AppColors.muted),

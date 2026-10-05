@@ -11,6 +11,8 @@ class SwitchState {
     required this.on,
     this.locked = false,
     this.loadA = 0,
+    this.channel,
+    this.button = false,
   });
 
   final String id;
@@ -19,12 +21,20 @@ class SwitchState {
   final bool locked;
   final double loadA;
 
+  /// Relay number on the distributor, or null for a relay on a GPIO pin.
+  final int? channel;
+
+  /// A pushbutton on the distributor also switches this one.
+  final bool button;
+
   factory SwitchState.fromJson(Map<String, dynamic> j) => SwitchState(
         id: _str(j['id']) ?? '',
         name: _str(j['name']) ?? _str(j['id']) ?? '',
         on: _bool(j['on'], false),
         locked: _bool(j['locked'], false),
         loadA: _num(j['load_a']) ?? 0,
+        channel: _num(j['channel'])?.toInt(),
+        button: _bool(j['button'], false),
       );
 
   SwitchState copyWith({bool? on, bool? locked}) => SwitchState(
@@ -33,6 +43,8 @@ class SwitchState {
         on: on ?? this.on,
         locked: locked ?? this.locked,
         loadA: loadA,
+        channel: channel,
+        button: button,
       );
 }
 
@@ -112,11 +124,15 @@ class CamperState {
     this.switches = const [],
     this.sensors = const [],
     this.protection = const Protection(),
+    this.distributorChannels,
   });
 
   final List<SwitchState> switches;
   final List<SensorState> sensors;
   final Protection protection;
+
+  /// Relays on the distributor module; null when switches sit on GPIO pins.
+  final int? distributorChannels;
 
   Iterable<SensorState> get batteries => sensors.where((s) => s.kind == SensorKind.battery);
   Iterable<SensorState> get thermometers => sensors.where((s) => s.kind == SensorKind.temperature);
@@ -125,6 +141,7 @@ class CamperState {
         switches: _list(j['switches']).map(SwitchState.fromJson).toList(),
         sensors: _list(j['sensors']).map(SensorState.fromJson).toList(),
         protection: Protection.fromJson(_map(j['protection'])),
+        distributorChannels: _num(_map(j['distributor'])?['channels'])?.toInt(),
       );
 }
 

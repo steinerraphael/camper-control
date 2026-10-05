@@ -9,7 +9,8 @@ import 'camper_api.dart';
 enum DemoScenario { normal, lowBattery, charging }
 
 class _DemoSwitch {
-  _DemoSwitch(this.id, this.name, this.loadA, this.shedPriority);
+  _DemoSwitch(this.channel, this.id, this.name, this.loadA, this.shedPriority);
+  final int channel;
   final String id;
   final String name;
   final double loadA;
@@ -19,7 +20,8 @@ class _DemoSwitch {
 }
 
 /// A simulated van, close enough to the Pi's behaviour to test the app with:
-/// the same switches as the example configuration, a 230 Ah AGM battery,
+/// the same switches on the same 8-channel distributor as the example
+/// configuration, a 230 Ah AGM battery,
 /// and the same low-voltage protection rules.
 ///
 /// The protection delay is 5 s here instead of 30 s, so a demo does not
@@ -37,12 +39,12 @@ class DemoCamperApi implements CamperApi {
   static const capacityAh = 230.0;
 
   final _switches = [
-    _DemoSwitch('interior_lights', 'Innenbeleuchtung', 2.0, 3),
-    _DemoSwitch('reading_lights', 'Leselampen', 0.5, 2),
-    _DemoSwitch('water_pump', 'Wasserpumpe', 4.0, 1),
-    _DemoSwitch('fridge', 'Kühlbox', 3.5, 4),
-    _DemoSwitch('usb_sockets', 'USB-Steckdosen', 1.0, 2),
-    _DemoSwitch('roof_fan', 'Dachlüfter', 1.5, null),
+    _DemoSwitch(1, 'interior_lights', 'Innenbeleuchtung', 2.0, 3),
+    _DemoSwitch(2, 'reading_lights', 'Leselampen', 0.5, 2),
+    _DemoSwitch(3, 'water_pump', 'Wasserpumpe', 4.0, 1),
+    _DemoSwitch(4, 'fridge', 'Kühlbox', 3.5, 4),
+    _DemoSwitch(5, 'usb_sockets', 'USB-Steckdosen', 1.0, 2),
+    _DemoSwitch(6, 'roof_fan', 'Dachlüfter', 1.5, null),
   ];
 
   final _states = StreamController<CamperState>.broadcast();
@@ -119,7 +121,15 @@ class DemoCamperApi implements CamperApi {
     return CamperState(
       switches: [
         for (final s in _switches)
-          SwitchState(id: s.id, name: s.name, on: s.on, locked: s.locked, loadA: s.loadA),
+          SwitchState(
+            id: s.id,
+            name: s.name,
+            on: s.on,
+            locked: s.locked,
+            loadA: s.loadA,
+            channel: s.channel,
+            button: true,
+          ),
       ],
       sensors: [
         SensorState(
@@ -146,6 +156,7 @@ class DemoCamperApi implements CamperApi {
           values: {'temperature': _round(_fridgeTemp, 1)},
         ),
       ],
+      distributorChannels: 8,
       protection: Protection(
         enabled: true,
         active: _protectionActive,

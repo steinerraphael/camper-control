@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../common.dart';
+import '../distributor_card.dart';
 import '../glass.dart';
 import '../switch_tile.dart';
 import '../theme.dart';
@@ -20,6 +21,16 @@ class SwitchesPage extends StatelessWidget {
                 child: Padding(
                   padding: const EdgeInsets.only(top: 8),
                   child: ProtectionBanner(recoverV: state.protection.recoverV),
+                ),
+              ),
+            if (state.distributorChannels != null)
+              SliverToBoxAdapter(
+                child: Padding(
+                  padding: const EdgeInsets.only(top: 12),
+                  child: DistributorCard(
+                    channels: state.distributorChannels!,
+                    switches: state.switches,
+                  ),
                 ),
               ),
             SliverToBoxAdapter(

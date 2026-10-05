@@ -61,7 +61,16 @@ void main() {
     await openPage(tester, 'Schalter');
     await tester.tap(find.text('Wasserpumpe'));
     await tester.pumpAndSettle();
-    expect(find.text('An · 4,0 A'), findsOneWidget);
+    expect(find.text('K3 · An · 4,0 A'), findsOneWidget);
+  });
+
+  testWidgets('switches page shows the distributor with free channels', (tester) async {
+    await pumpApp(tester);
+    await openPage(tester, 'Schalter');
+    expect(find.text('Verteiler'), findsOneWidget);
+    expect(find.text('8 Kanäle · 6 belegt · 2 frei'), findsOneWidget);
+    expect(find.bySemanticsLabel('Kanal 7 frei'), findsOneWidget);
+    expect(find.bySemanticsLabel('Kanal 3, Wasserpumpe, aus'), findsOneWidget);
   });
 
   testWidgets('every page renders on a small phone', (tester) async {

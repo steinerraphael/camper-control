@@ -22,7 +22,7 @@ class SwitchConfig(BaseModel):
     # Exactly one of these: a relay on a GPIO pin, or a channel of the
     # Modbus relay module configured under `modbus`.
     pin: int | None = Field(None, description="BCM GPIO number driving the relay or MOSFET")
-    channel: int | None = Field(None, ge=1, le=8, description="Relay 1-8 of the Modbus module")
+    channel: int | None = Field(None, ge=1, le=32, description="Relay number on the Modbus module")
     # A pushbutton on input DI<channel> of the module toggles this relay,
     # also while the Pi is down.
     button: bool = False
@@ -49,6 +49,9 @@ class ModbusConfig(BaseModel):
     port: str = "/dev/ttyUSB0"
     baudrate: int = 9600
     address: int = Field(1, ge=1, le=247)
+    # How many relays the module has. Only for display: the app shows the
+    # free ones, so it is clear what is left for the next circuit.
+    channels: int = Field(8, ge=1, le=32)
 
 
 class Ina226Config(BaseModel):
@@ -113,6 +116,8 @@ class Config(BaseModel):
             raise ValueError(f"Modbus channel used twice: {sorted(dupes_ch)}")
         if channels and self.modbus is None:
             raise ValueError("switches use channel, but there is no modbus section")
+        if self.modbus and any(c > self.modbus.channels for c in channels):
+            raise ValueError(f"channel above the module's {self.modbus.channels} relays")
         if self.protection:
             battery = next(
                 (s for s in self.sensors if s.id == self.protection.battery_sensor), None

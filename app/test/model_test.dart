@@ -15,6 +15,9 @@ void main() {
     final pump = state.switches.firstWhere((s) => s.id == 'water_pump');
     expect(pump.name, 'Wasserpumpe');
     expect(pump.loadA, 4.0);
+    expect(pump.channel, 3);
+    expect(pump.button, isTrue);
+    expect(state.distributorChannels, 8);
 
     final battery = state.batteries.single;
     expect(battery.voltage, isNotNull);

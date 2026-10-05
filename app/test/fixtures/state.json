@@ -5,44 +5,59 @@
       "name": "Innenbeleuchtung",
       "on": false,
       "locked": false,
-      "load_a": 2.0
+      "load_a": 2.0,
+      "channel": 1,
+      "button": true
     },
     {
       "id": "reading_lights",
       "name": "Leselampen",
       "on": false,
       "locked": false,
-      "load_a": 0.5
+      "load_a": 0.5,
+      "channel": 2,
+      "button": true
     },
     {
       "id": "water_pump",
       "name": "Wasserpumpe",
       "on": true,
       "locked": false,
-      "load_a": 4.0
+      "load_a": 4.0,
+      "channel": 3,
+      "button": true
     },
     {
       "id": "fridge",
       "name": "Kühlbox",
       "on": false,
       "locked": false,
-      "load_a": 3.5
+      "load_a": 3.5,
+      "channel": 4,
+      "button": true
     },
     {
       "id": "usb_sockets",
       "name": "USB-Steckdosen",
       "on": false,
       "locked": false,
-      "load_a": 1.0
+      "load_a": 1.0,
+      "channel": 5,
+      "button": true
     },
     {
       "id": "roof_fan",
       "name": "Dachlüfter",
       "on": false,
       "locked": false,
-      "load_a": 1.5
+      "load_a": 1.5,
+      "channel": 6,
+      "button": true
     }
   ],
+  "distributor": {
+    "channels": 8
+  },
   "sensors": [
     {
       "id": "house_battery",
@@ -62,7 +77,7 @@
       "name": "Innenraum",
       "type": "ds18b20",
       "values": {
-        "temperature": 18.7
+        "temperature": 19.3
       },
       "error": null,
       "updated_at": 1760000000.0,
@@ -73,7 +88,7 @@
       "name": "Kühlbox innen",
       "type": "ds18b20",
       "values": {
-        "temperature": 4.9
+        "temperature": 4.8
       },
       "error": null,
       "updated_at": 1760000000.0,

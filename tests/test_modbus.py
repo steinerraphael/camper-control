@@ -147,3 +147,10 @@ def test_a_modbus_config_runs_on_the_mock_driver():
     ctl = Controller(config, *build_hardware(config))
     ctl.set_switch("pump", True)
     assert ctl.snapshot()["switches"][0]["on"] is True
+
+
+def test_channel_must_exist_on_the_module():
+    with pytest.raises(ValidationError, match="module's 4 relays"):
+        Config.model_validate(
+            {"modbus": {"channels": 4}, "switches": [{"id": "a", "name": "A", "channel": 5}]}
+        )

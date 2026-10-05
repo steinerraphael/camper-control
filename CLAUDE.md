@@ -32,6 +32,12 @@ deploy/                install.sh, systemd-Unit
   gegen `app/test/fixtures/state.json`, das die App-Tests parsen. Neu erzeugen
   mit `UPDATE_FIXTURE=1 pytest tests/test_contract.py`.
 - JSON-Parsing fällt bei falschen Typen auf Standardwerte zurück, statt zu werfen.
+- **Verteiler**: Die Beispielkonfiguration nutzt das Waveshare-Modbus-Relais
+  (D) mit `channel:`/`button:`. Der Snapshot enthält `distributor.channels`,
+  die App zeigt daraus belegte und freie Kanäle. Mit Tastern ist der
+  Zustand im Modul die Wahrheit: Der Controller liest ihn bei jedem Poll
+  zurück (`Output.read`), der Unterspannungsschutz schaltet per Taster
+  eingeschaltete, gesperrte Verbraucher wieder aus.
 - Kacheln haben feste Höhen und wachsen mit der Systemschriftgröße
   (`textGrow`); die Widget-Tests prüfen jede Seite auf 320 px und mit 140 %
   Schrift. Endlos-Animationen nur im Live-Modus, sonst hängt `pumpAndSettle`.

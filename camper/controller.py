@@ -162,9 +162,15 @@ class Controller:
                     "on": self._on[s.id],
                     "locked": s.id in self._locked,
                     "load_a": s.load_a,
+                    "channel": s.channel,
+                    "button": s.button,
                 }
                 for s in self.config.switches
             ],
+            # The relay module as a whole, so the app can show free channels.
+            "distributor": (
+                {"channels": self.config.modbus.channels} if self.config.modbus else None
+            ),
             "sensors": [
                 {
                     "id": s.id,
