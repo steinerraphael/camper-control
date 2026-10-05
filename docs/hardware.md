@@ -108,6 +108,12 @@ Zwei sinnvolle Varianten:
    richtet das WLAN „Camper“ mit Passwort ein, dauerhaft und mit fester
    Adresse 10.42.0.1. Zurück mit `sudo deploy/hotspot.sh off`.
 
+**Reichweite:** Das eingebaute WLAN des Pi reicht im Bus. Kein Metallgehäuse
+für den Pi (Aluminium dämpft stark) und nicht hinter Blech einbauen. Reicht
+es draußen vor dem Bus nicht, hilft ein USB-WLAN-Stick mit Antenne, der unter
+Linux den Access-Point-Modus kann (Chipsatz MediaTek MT7612U oder MT7601U),
+an einer USB-Verlängerung: `sudo IFACE=wlan1 deploy/hotspot.sh`.
+
 Die Weboberfläche hat **noch keine Anmeldung**. Wer im WLAN ist, kann schalten.
 Das WLAN-Passwort ist daher die Zugangskontrolle; kein Port-Forwarding ins Internet.
 

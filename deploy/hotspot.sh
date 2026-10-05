@@ -5,6 +5,7 @@
 #   sudo deploy/hotspot.sh                 # WLAN "Camper", fragt nach dem Passwort
 #   sudo deploy/hotspot.sh MeinBus         # anderer WLAN-Name
 #   sudo deploy/hotspot.sh off             # zurück: Pi meldet sich wieder in bekannten WLANs an
+#   sudo IFACE=wlan1 deploy/hotspot.sh     # über einen USB-WLAN-Stick mit Antenne
 #
 # Danach im Handy mit dem WLAN verbinden und http://camper.local:8080
 # öffnen (oder http://10.42.0.1:8080, falls .local nicht klappt).
@@ -14,6 +15,7 @@ set -euo pipefail
 command -v nmcli >/dev/null || { echo "NetworkManager fehlt (ab Raspberry Pi OS Bookworm Standard)."; exit 1; }
 
 CON=camper-hotspot
+IFACE="${IFACE:-wlan0}"
 
 if [[ "${1:-}" == "off" ]]; then
   nmcli connection modify "$CON" connection.autoconnect no 2>/dev/null || true
@@ -30,7 +32,7 @@ read -rsp "Passwort für das WLAN \"$SSID\" (mind. 8 Zeichen): " PASS; echo
 raspi-config nonint do_wifi_country DE
 
 nmcli connection delete "$CON" >/dev/null 2>&1 || true
-nmcli connection add type wifi ifname wlan0 con-name "$CON" ssid "$SSID" \
+nmcli connection add type wifi ifname "$IFACE" con-name "$CON" ssid "$SSID" \
   802-11-wireless.mode ap 802-11-wireless.band bg \
   ipv4.method shared ipv4.addresses 10.42.0.1/24 \
   wifi-sec.key-mgmt wpa-psk wifi-sec.proto rsn \
