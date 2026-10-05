@@ -155,6 +155,8 @@ max. 550 W, 20 A Ladestrom; Leerlauf ca. 0,65 A).
   rein, 230-V-Verbrauch raus) wäre ein zweiter Shunt mit INA226 in seiner
   Minusleitung nötig.
 - **Leerlauf:** 0,65 A sind rund 15 Ah am Tag. Bei Nichtgebrauch ausschalten.
+- **Fernbedienung RC4:** Wie man ihre Leitung nachmisst, um den
+  Wechselrichter in die App zu holen: [ective-rc4-messen.md](ective-rc4-messen.md).
 - **Batterie:** Ective empfiehlt ab 250 Ah (Blei); die 230-Ah-AGM liegt knapp
   darunter.
 
