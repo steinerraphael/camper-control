@@ -53,9 +53,10 @@ sensors:
     name: Aufbaubatterie
     bus: 1
     address: 0x40
-    # 100 A / 75 mV Shunt. Reicht für 230 Ah AGM ohne Wechselrichter;
-    # mit Wechselrichter > 1000 W einen 200-A-Shunt nehmen (0.000375).
-    shunt_ohms: 0.00075
+    # 200 A / 75 mV Shunt (0,375 mΩ): Auch der Wechselrichter (Ective SSI 15,
+    # 1500 W ≈ 140 A) läuft über ihn. Ohne Wechselrichter reicht 100 A / 75 mV
+    # (0.00075).
+    shunt_ohms: 0.000375
     capacity_ah: 230
   - type: ds18b20
     id: inside_temp

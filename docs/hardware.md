@@ -84,7 +84,8 @@ und der Schalter bleibt im alten Zustand.
 
 - Misst Spannung und, über einen **externen Shunt im Minuspfad**, den Strom.
   Die kleinen Module haben einen 0,1-Ω-Shunt für nur ca. 0,8 A, der muss
-  durch einen Kfz-Shunt ersetzt werden (z. B. 100 A / 75 mV, das sind 0,75 mΩ).
+  durch einen Kfz-Shunt ersetzt werden. Mit dem Wechselrichter 200 A / 75 mV
+  (0,375 mΩ), ohne ihn reichen 100 A / 75 mV (0,75 mΩ).
 - Bus-Spannungseingang (VBUS) bis 36 V, passt also zum 12-V-Bordnetz.
 - Adresse 0x40 (A0/A1 auf GND). Prüfen mit `i2cdetect -y 1`.
 - Wer schon einen Victron SmartShunt oder BMV hat: VE.Direct-Anbindung ist
@@ -136,6 +137,27 @@ Das WLAN-Passwort ist daher die Zugangskontrolle; kein Port-Forwarding ins Inter
 Ohne Relaismodul (Relaisplatine an GPIO) siehe Kommentar in
 `config/config.example.yaml`.
 
+## Wechselrichter (Ective SSI 15)
+
+Verbaut ist ein Ective SSI 15 (1500 W, 12 V): Wechselrichter, Ladegerät und
+MPPT-Solarladeregler in einem Gerät (laut Anleitung: Solareingang 28–70 V,
+max. 550 W, 20 A Ladestrom; Leerlauf ca. 0,65 A).
+
+- **Eigene Zuleitung:** Plus über eine 125-A-Sicherung direkt an der
+  Batterie, Querschnitt nach der Tabelle in der Ective-Anleitung (zwei
+  Kabelsätze je Pol). Nie über den Sicherungsverteiler.
+- **Minus direkt an die Lastseite des Shunts**, mit gleichem Querschnitt.
+  Dann misst der Shunt den Wechselrichter mit, ohne dass bis zu 140 A über
+  die Minusschiene laufen. Deshalb **200-A-Shunt** statt 100 A.
+- **Keine Datenschnittstelle:** Der SSI 15 hat nur eine RJ12-Buchse für die
+  Fernbedienung RC4, kein App-, Bluetooth- oder RS232-Protokoll. Was er tut,
+  sieht die App nur am Batteriestrom. Für getrennte Werte (Solar/Landstrom
+  rein, 230-V-Verbrauch raus) wäre ein zweiter Shunt mit INA226 in seiner
+  Minusleitung nötig.
+- **Leerlauf:** 0,65 A sind rund 15 Ah am Tag. Bei Nichtgebrauch ausschalten.
+- **Batterie:** Ective empfiehlt ab 250 Ah (Blei); die 230-Ah-AGM liegt knapp
+  darunter.
+
 ## Solar (PV Dach)
 
 Die PV-Anlage wird **nicht** über ein Relais des Verteilers geschaltet:
@@ -147,9 +169,7 @@ Die PV-Anlage wird **nicht** über ein Relais des Verteilers geschaltet:
 - Wird der Akku vom Laderegler getrennt, während die Module liefern, kann
   der Regler beschädigt werden.
 
-Richtig ist: Modul → **DC-tauglicher PV-Trennschalter** → **MPPT-Laderegler**
-→ Aufbaubatterie (mit eigener Sicherung am Reglerausgang, Minus an X2, damit
-der Shunt mitmisst). In die App kommt die PV über den Laderegler: Ertrag,
-Ladestrom und Zustand lesen und, wo der Regler das kann, das Laden ein- und
-ausschalten. Bei Victron-Reglern geht das über VE.Direct (geplante
-Ausbaustufe).
+Richtig ist: Module → **DC-tauglicher PV-Trennschalter** → Solareingang des
+**Ective SSI 15** (28–70 V, also zwei 12-V-Module in Reihe oder ein Modul mit
+entsprechender Spannung). Der SSI lädt die Batterie selbst; die App sieht den
+Ladestrom über den Shunt.
